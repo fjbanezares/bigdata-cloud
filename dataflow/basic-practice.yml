@@ -1,0 +1,7 @@
+steps:
+  launch-job:
+    python3 -m  apache_beam.examples.wordcount \
+      --region us-central1 --input  gs://dataflow-samples/shakespeare/kinglear.txt \
+      --output  gs://dataflow-practice-fjbanezares/results/output \
+      --runner DataflowRunner  --project  practica-bigtable-361011 \
+      --temp_location  gs://dataflow-practice-fjbanezares/temp/

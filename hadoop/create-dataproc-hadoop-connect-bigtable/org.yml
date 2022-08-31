@@ -1,0 +1,9 @@
+fuente: https://cloud.google.com/bigtable/docs/creating-hadoop-cluster
+
+steps:
+  - crear el clúster de Dataproc
+  - run Hadoop jobs that read and write data to and from Bigtable.
+  - Create a Bigtable instance. Be sure to note the project ID and Bigtable instance ID.
+  - Enable the Bigtable, Bigtable Admin, Dataproc, and Cloud Storage JSON APIs:
+  - Verify that your user account is in a role that includes the permission storage.objects.get.
+  -

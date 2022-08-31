@@ -1,0 +1,3 @@
+metodo-montecarlo-dataproc-spark: https://cloud.google.com/architecture/monte-carlo-methods-with-hadoop-spark
+migrar-de-spark-a-dataproc: https://cloud.google.com/architecture/hadoop/migrating-apache-spark-jobs-to-cloud-dataproc
+jacek-spark-examples-on-GKE: https://jaceklaskowski.github.io/spark-kubernetes-book/demo/running-spark-examples-on-google-kubernetes-engine/

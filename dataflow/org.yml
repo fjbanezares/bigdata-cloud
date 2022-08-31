@@ -1,0 +1,7 @@
+docs: https://cloud.google.com/dataflow/docs
+
+Apache Beam: Dataflow is based on Apache Beam
+
+What is?:
+  - framework streaming jobs
+  - idea of Apache Storm

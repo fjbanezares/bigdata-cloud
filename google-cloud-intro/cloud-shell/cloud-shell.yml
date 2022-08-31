@@ -1,0 +1,30 @@
+what is?:
+  - a way to communicate via CLI with GC
+  - VM generated in the cloud console
+
+cheatsheet: https://jayendrapatil.com/google-cloud-gcloud-cheat-sheet/
+GC cheatsheet:  https://googlecloudcheatsheet.withgoogle.com/
+
+commands:
+  gcloud auth list: lista de cuentas con credenciales
+  gcloud config list: current properties enumeration
+  gcloud info: properties about the CLI such as GC SDK version, python version and location, installed components ...
+  Linux Style help:
+    examples:
+      - gcloud help compute instances create: For Compute Engine possibilities, can be overwhelming like Linux
+      - gcloud topic filters: about filtering options
+          examples:
+            - gcloud compute instances list --filter="machineType:f1-micro"
+            - gcloud compute instances list --filter="zone ~ us AND -machineType:f1-micro"
+            - gcloud projects list --format="json" --filter="labels.env=test AND labels.version=alpha"
+  Google Cloud Config:
+    gcloud config set project <project-id> : switch project
+    gcloud compute project-info describe: see compute project info, you need enable compute API
+  gcloud bigtable instances create 
+  $INSTANCE_ID \
+  --cluster=$CLUSTER_ID \
+  --cluster-zone=$CLUSTER_ZONE \
+  --cluster-num-nodes=$CLUSTER_NUM_NODES \
+  --display-name=$INSTANCE_ID
+    message
+

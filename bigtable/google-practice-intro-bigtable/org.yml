@@ -1,0 +1,118 @@
+source:  https://codelabs.developers.google.com/codelabs/cloud-bigtable-intro-java/
+
+notes:
+  - It doesn't matter it is Java the language used and not Python as the goal here is to understand how to play with BigTable:
+      - How to design a rowkey
+      - best schema for our needs
+
+set-queries:
+  Get the locations of a specific vehicle over an hour.
+  Get the locations of an entire bus line over an hour.
+  Get the locations of all buses in Manhattan in an hour.
+  Get the most recent locations of all buses in Manhattan in an hour.
+  Get the locations of an entire bus line over the month.
+  Get the locations of an entire bus line with a certain destination over an hour.
+
+rowkey:
+  first-idea:
+    - timestamp first so we can follow what happens over one hour
+    - but it is a mistake as we want to select:
+        - vehicle
+        - bus-line
+        - all-buses
+
+steps:
+  - create a new project:
+     Use built in Cloud Shell, that has already installed:
+      - the gcloud command-line tool
+      - the cbt command-line interface
+      - Maven
+  - set-env-vars:
+    - INSTANCE_ID="bus-instance"
+    - CLUSTER_ID="bus-cluster"
+    - TABLE_ID="bus-data"
+    - CLUSTER_NUM_NODES=3
+    - CLUSTER_ZONE="us-central1-c"
+  - Enable the Cloud Bigtable APIs:
+      - gcloud services enable bigtable.googleapis.com bigtableadmin.googleapis.com
+  - Create-an-instance:
+       gcloud bigtable instances create $INSTANCE_ID \
+         --cluster=$CLUSTER_ID \
+         --cluster-zone=$CLUSTER_ZONE \
+         --cluster-num-nodes=$CLUSTER_NUM_NODES \
+         --display-name=$INSTANCE_ID
+
+       output:
+            WARNING: The --cluster argument is deprecated; use --cluster-config instead.
+            WARNING: The --cluster-zone argument is deprecated; use --cluster-config instead.
+            WARNING: The --cluster-num-nodes argument is deprecated; use --cluster-config instead.
+
+       gcloud help bigtable instances create: I liked more the all way while less concise :)
+         gcloud bigtable instances create my-hdd-instance \
+         --display-name="HDD Instance" --cluster-storage-type=HDD \
+         --cluster-config=id=my-cluster-id,zone=us-east1-c,nodes=10
+
+       what it does?:
+         - read sequencefiles
+         - create mutations
+         - write to bigtable
+
+
+  - populate the cbt configuration file:
+       - echo project = $GOOGLE_CLOUD_PROJECT > ~/.cbtrc
+       - echo instance = $INSTANCE_ID >> ~/.cbtrc
+
+  - create a table and column family:
+      cbt createtable $TABLE_ID
+      cbt createfamily $TABLE_ID cf
+
+  - Import a set of sequence files from gs://cloud-bigtable-public-datasets/bus-data :
+      Enable the Cloud Dataflow API:
+        - gcloud services enable dataflow.googleapis.com
+      Run the following commands to import the table:
+
+        NUM_WORKERS=$(expr 3 \* $CLUSTER_NUM_NODES)
+        
+        gcloud beta dataflow jobs run import-bus-data-$(date +%s) \
+        --gcs-location gs://dataflow-templates/latest/GCS_SequenceFile_to_Cloud_Bigtable \
+        --num-workers=$NUM_WORKERS --max-workers=$NUM_WORKERS \
+        --parameters bigtableProject=$GOOGLE_CLOUD_PROJECT,bigtableInstanceId=$INSTANCE_ID,bigtableTableId=$TABLE_ID,sourcePattern=gs://cloud-bigtable-public-datasets/bus-data/*
+
+
+  - Get the code:
+      git clone https://github.com/googlecodelabs/cbt-intro-java.git
+      cd cbt-intro-java
+
+  - Change to Java 11:
+      sudo update-java-alternatives -s java-1.11.0-openjdk-amd64 && export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
+
+
+  - Perform a Lookup:
+      The first query you'll perform is a simple row lookup. You'll get the data for a bus on the M86-SBS line on June 1, 2017 from 12:00 am to 1:00 am. A vehicle with id NYCT_5824 is on the bus line then.
+      With that information, and knowing the schema design (Bus company/Bus line/Timestamp rounded down to the hour/Vehicle ID,) you can deduce that the row key is
+      MTA/M86-SBS/1496275200000/NYCT_5824
+
+
+      BusQueries.java:
+        private static final byte[] COLUMN_FAMILY_NAME = Bytes.toBytes("cf");
+        private static final byte[] LAT_COLUMN_NAME = Bytes.toBytes("VehicleLocation.Latitude");
+        private static final byte[] LONG_COLUMN_NAME = Bytes.toBytes("VehicleLocation.Longitude");
+
+        String rowKey = "MTA/M86-SBS/1496275200000/NYCT_5824";
+        Result getResult =
+        table.get(
+        new Get(Bytes.toBytes(rowKey))
+        .setMaxVersions(Integer.MAX_VALUE)
+        .addColumn(COLUMN_FAMILY_NAME, LAT_COLUMN_NAME)
+        .addColumn(COLUMN_FAMILY_NAME, LONG_COLUMN_NAME));
+
+      mvn package exec:java -Dbigtable.projectID=$GOOGLE_CLOUD_PROJECT \
+      -Dbigtable.instanceID=$INSTANCE_ID -Dbigtable.table=$TABLE_ID \
+      -Dquery=lookupVehicleInGivenHour
+
+
+challenge:
+   use python instead of Java:
+      - pip3 install google-cloud-bigtable
+      - set queries in code
+      - launch queries

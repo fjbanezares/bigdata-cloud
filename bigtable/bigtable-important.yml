@@ -1,0 +1,44 @@
+google-all-products: https://console.cloud.google.com/products
+
+Write: for batch and streaming we can use Dataflow Connector
+  Simple writes:
+    - smart retries
+    - You can write a single row to Bigtable with a MutateRow request that includes the table name, the ID of the app profile that should be used, a row key, and up to 100,000 mutations for that row
+    - single-row write is atomic
+  Increments and appends
+  Conditional writes
+  Batch writes:
+    - smart retries
+write requests:
+  - The name of the table to write to.
+  - An app profile ID, which tells Bigtable how to route the traffic.
+  - One or more mutations. A mutation consists of four elements:
+    - Column family name
+    - Column qualifier
+    - Timestamp: default value of the current date and time
+    - Value that you are writing to the table
+Reads:
+  - ead requests to Bigtable stream back the contents of the requested rows in key order, meaning they are returned in the order in which they are stored
+Reading a single row:
+  Read a partial row:
+    filters: A filter is applied to the data before the response is sent, reducing the amount of data that is returned
+
+
+  cans, or reading multiple rows
+Scan-many-rows:
+
+
+
+Python-virtual:
+
+  'export PATH="$HOME/.pyenv/bin:$PATH"'     >> ~/.bashrc
+  echo 'eval "$(pyenv init --path)"'     >> ~/.bashrc
+  'eval "$(pyenv init -)"' >>     ~/.bashrc
+  echo     'eval "$(pyenv virtualenv-init -)"'     >> ~/.bashrc
+  curl -L     https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer     | bash
+  pyenv install 3.8.13
+  pyenv virtualenv 3.8.13 dataflow
+  pyenv activate dataflow
+  pip3 install apache-beam[gcp]
+  python3 -m     apache_beam.examples.wordcount     --region us-central1 --input     gs://dataflow-samples/shakespeare/kinglear.txt     --output     gs://dataflow-practice-fjbanezares/results/output     --runner DataflowRunner     --project     practica-bigtable-361011     --temp_location     gs://dataflow-practice-fjbanezares/temp/
+  pyenv deactivate
