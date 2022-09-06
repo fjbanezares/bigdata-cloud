@@ -1,0 +1,70 @@
+idea-subyacente: capacitacion para certificacion ACE
+  necesidades: ser capaz de coger datos, transformarlos, sinkarlos
+    - para ello tenemos enorme arsenal de Google Cloud
+    - bastante complejo, cada herramienta en sí misma merecería un master
+    - ataque basado en experiencia, en mi propio master, en cursos de Google Cloud
+
+temario:
+  clases iniciales:
+    conceptos básicos:
+      - Introducción al Big Data y la Nube
+      - Redes de Ordenadores
+      - Lenguajes de Programación
+      - Problemas basicos de las arquitecturas modernas
+          Data locality
+          Fault Tolerance
+          CAP theorem
+          Consistencia eventual
+          Particionado
+          Replicacion
+          Microservicios frente a Monolitos
+          Tiempo real y flujos de datos
+
+  Hadoop, BigTable: las bases
+      - Entendimiento teórico
+      - Ejemplos de MapReduce
+      - Google originalmente es un algoritmo de bùsqueda que se basa en un PageRank masivo, ahora ha evolucionado al Cloud y al BigData
+      - Cómo nace un ecosistema, Hive, Pig son formas de abstraer la complejidad y dar cierta facilidad de uso a puestos de trabajo menos técnicos
+      - Pero los ingenieros de Big Data necesitan saber enfrentarse con la complejidad subyacente, no vivir en la pura abstracción.
+
+  Spark: del disco a la memoria, el arte de un lenguaje funcional, mucho más rápido y mucho más 
+      - Scala es el lenguaje rey
+      - una API fantástica en Python, un lenguaje mucho más intuitivo y de alto nivel, en este vamos a desarrollar 3 o 4 practicas chulas que den 
+      a los alumnos el feeling (falso) de que las cosas funcionan sin demasiado esfuerzo (querer es poder)
+         Databricks ofrece soporte para diversos clusters:
+           - Standalone
+           - Mesos
+           - Hadoop2 o YARN
+           - Kubernetes
+
+  Sources/Sink: Con Spark habrá quedado claro que necesitamos de donde coger y poner los datos.
+      Hadoop: Muchas empresas usan el lago, Parquet es un formato ideal coges y metes de Haddop
+      NoSQL: Pero también podemos cargar los RDD desde bases de datos
+        - Cassandra
+        - Mongo
+        - HBASE
+        - Los equivalentes de Google Cloud, cada uno es un mundo pero en la base son muy parecidos y el reto está en condensar esa base
+
+  Dataflow: Me parece uno de los productos estrella de Google Cloud si dominas esto casi dominas todo lo demás si es que ese dominio es posible, usa Apache Beam una abstracción sobre Spark o Flink
+      - Sería muy interesante presentar bien un par de prácticas sobre Dataflow, de las que tiene Google un poco mascadas
+
+  Docker/Kubernetes/Microservicios: Presentar el mundo de la containerizacion que todo lo hace "fácil"
+      A raíz de manejar bien los contenedores y los orquestadores tenemos la capacidad de levantar sistemas de microservicios autogestionados
+      Luego hay mucho trabajo de monitorización y estar encima pero el automatismo conseguido para desplegar sistemas es brutal
+
+  Real Time: Enlazando con los microservicios, la mayoría de las aplicaciones interesantes usan el tiempo real
+      Kafka/Pub-Sub: sistemas de colas que permiten dar orden y sentido al tiempo real
+        Enlace con el ML/AI: por ejemplo un sistema de detección de fraude en tiempo real en el fondo sería la combinación de un sistema de colas con un modelo de AI entrenado para detección de fraude
+
+
+  Certificacion ACE: Estaria bien cerrar el curso haciendo ver que la base teórica, junto con las practicas concretas de programacion ponen las bases para afrontar esta certificacion
+      - Google habla de al menos 6 meses de trabajo con GCP en entornos productivos para afrontar la certificacion
+      - Pero al menos como yo lo entiendo si te defiendes en Dataflow, Sourcing, Dataproc y un par de bases de datos podrias afrontar lo que piden de leer, transformar y escribir
+      - Sera interesante segun vayamos haciendo cursos de Google si vamos teniendo mas luz concreta en cuanto al conocimiento real necesario para sacar estar certificacion con garantias.
+
+  Charlas de casos practicos:
+    Ryanair
+    HSBC
+    Databricks
+    
+

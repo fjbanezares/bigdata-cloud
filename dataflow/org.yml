@@ -1,7 +1,20 @@
 docs: https://cloud.google.com/dataflow/docs
 
+courses:
+  pluralsight:
+    Foundations:
+      - https://app.pluralsight.com/paths/skill/serverless-data-processing-with-dataflow
+      - Apache Beam and Dataflow work together to meet your data processing needs without the risk of vendor lock-in
+    Develop Pipelines:
+      - how you convert our business logic into data processing applications that can run on Dataflow
+    Operations:
+      - most important lessons for operating a data application on Dataflow, including monitoring, troubleshooting, testing, and reliability
+
+
 Apache Beam: Dataflow is based on Apache Beam
+
 
 What is?:
   - framework streaming jobs
-  - idea of Apache Storm
+  - idea of Apache Storm for Stream or Kafka Streams? or Spark Streaming or Apache Flink
+  - unifying batch & stream processing

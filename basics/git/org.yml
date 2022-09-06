@@ -2,3 +2,8 @@ buenos-cursos:
   attlasian: https://www.atlassian.com/git/tutorials/saving-changes/gitignore
   git:
 
+
+repos:
+  course-repo: https://github.com/fjbanezares/bigdata-cloud.git
+  gitlab: https://gitlab.com/fjbanezares/bigdata-cloud
+

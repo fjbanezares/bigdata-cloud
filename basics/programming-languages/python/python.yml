@@ -1,0 +1,11 @@
+type: object oriented
+
+characteristics:
+  - high level
+  - easy to read and understand
+  - use everywhere
+
+curaso-pluralsiught:
+    string:
+      - immutable, ilusion of modifying, references an object
+      - str.join() more efficient than +

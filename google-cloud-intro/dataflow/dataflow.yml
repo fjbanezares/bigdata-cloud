@@ -1,0 +1,7 @@
+what: Apache Beam based cloud framework
+
+training:
+  Googlw: https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/courses/dataflow/demos/beam_notebooks/beam_notebooks_demo.ipynb
+    - Understand Apache Beam API is very important
+    - But with this WordCound we can have a taste on it
+    - How we say that it is Dataflow the engine and not Spark or Flink?

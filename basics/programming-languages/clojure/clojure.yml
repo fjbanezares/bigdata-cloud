@@ -1,0 +1,9 @@
+type: functional
+
+characteristics:
+  - very concise
+  - hard to read as a beginner
+
+materials:
+  - https://clojuredocs.org/clojure.core/apply
+

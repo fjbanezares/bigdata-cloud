@@ -1,0 +1,199 @@
+3 ways launch:
+  - template from console
+  - pipeline Apache Beam SDK launch from dev environment IntelliJ for example)
+  - SQL UI
+
+Basics:
+  - Data is held in abstraction called PCollection:
+      - Immutable
+  - Actions in an abstraction called PTransforme:
+      - takes care of all
+  - Pipeline runners:
+      - like containers in K8S
+Default Transforms:
+  - ParDo: Parallel Do
+      - apply f to each element
+  - GroupByKey: All elements with same Key goes to the same worker
+  - Combine: Associative, Commutative operations on huge elements has better performance
+  - CoGroupByKey: join two Pcollections by common key
+      LEFT
+      RIGHT
+      INNER
+  - Flatten: receive also 2 PCollection and fuses them together
+      exactly the same type must be contained
+  - with join can be with different types
+  - Partition: opposite
+      - Divides PCollection in several outpiut PCollections
+Do in Detail:
+  ParDo: 1 -> 1, 0 or many
+  Filter: 1 -> 1 or 0
+  MapElements: 1 -> 1
+  FlatMapElements: 1 -> 0,1 or many
+  WithKeys: value -> (f(value), value)
+  Keys:
+  Values:
+
+DoFn lifecycle: any exception teardown is called
+  Worker Stards: call setup method (once per worker), ideal to start db conn, network conn, any other helper preocess
+  receive a new data bundle: startBundle method called
+  then call process method on timer: this is where the transform takes place
+    here we may receive objects
+  when last element is transformed: finish bundle, a place to save results would be this method
+  all finish: tear down methos, here close conn
+
+practice1 with Java: Serverless Data Processing with Dataflow - Writing an ETL pipeline using Apache Beam and Cloud Dataflow (Java)
+  what:
+    - Build a batch Extract-Transform-Load pipeline in Apache Beam, which takes raw data from Google Cloud Storage and writes it to Google BigQuery.
+    - Run the Apache Beam pipeline on Cloud Dataflow.
+    - Parameterize the execution of the pipeline.
+
+  data:
+    - log data
+    - data is treated as a batch source
+    - task is to read the data, parse it, and then write it to BigQuery, a serverless data warehouse, for later data analysis..
+
+    Modifying the pom.xml file:
+      <dependency>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-sdks-java-core</artifactId>
+        <version>${beam.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-runners-direct-java</artifactId>
+        <version>${beam.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-sdks-java-io-google-cloud-platform</artifactId>
+        <version>${beam.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+        <version>${beam.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.beam</groupId>
+        <artifactId>beam-sdks-java-extensions-google-cloud-platform-core</artifactId>
+        <version>${beam.version}</version>
+      </dependency>
+      
+      # Download dependencies listed in pom.xml
+      mvn clean dependency:resolve
+
+    Write your first pipeline:
+      Task 1: Generate synthetic data
+        clone a repository containing scripts for generating synthetic web server logs:
+        Change to the directory containing the relevant code
+           cd $BASE_DIR/../..
+         # Create GCS buckets and BQ dataset
+           source create_batch_sinks.sh
+        # Run a script to generate a batch of web server log events
+          bash generate_batch_events.sh
+        # Examine some sample events
+          head events.json
+
+       # script creates a file called events.json containing lines resembling the following:
+       # {"user_id": "-6434255326544341291", "ip": "192.175.49.116", "timestamp": "2019-06-19T16:06:45.118306Z", "http_request": "\"GET eucharya.html HTTP/1.0\"", "lat": 37.751, "lng": -97.822, "http_response": 200, "user_agent": "Mozilla/5.0 (compatible; MSIE 7.0; Windows NT 5.01; Trident/5.1)", "num_bytes": 182}
+        #It then automatically copies this file to your Google Cloud Storage bucket at
+            #gs://<YOUR-PROJECT-ID>/events.json.
+      Task 2: Read data from your source
+        make sure we import:
+          import com.google.gson.Gson;
+          import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
+          import org.apache.beam.sdk.Pipeline;
+          import org.apache.beam.sdk.PipelineResult;
+          import org.apache.beam.sdk.io.TextIO;
+          import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+          import org.apache.beam.sdk.options.PipelineOptionsFactory;
+          import org.apache.beam.sdk.schemas.JavaFieldSchema;
+          import org.apache.beam.sdk.schemas.annotations.DefaultSchema;
+          import org.apache.beam.sdk.transforms.DoFn;
+          import org.apache.beam.sdk.transforms.ParDo;
+          import org.slf4j.Logger;
+          import org.slf4j.LoggerFactory;
+
+
+        # Pipeline object is created using a PipelineOptions object and the final line of the method runs the pipeline.
+            Pipeline pipeline = Pipeline.create(options);
+              // Do stuff
+            pipeline.run();
+
+
+       # TextIO.Read root transform to read data from a text file.
+        #transform is applied to a Pipeline object p, and returns a pipeline data set in the form of a PCollection<String>
+
+        PCollection<String> lines = pipeline.apply("ReadLines", TextIO.read().from("gs://path/to/input.txt"));
+
+        #Inside the run() method, create a string constant called “input” and set its value to gs://<YOUR-PROJECT-ID>/events.json. In a future lab, you will use command-line parameters to pass this information.
+
+        # Add any appropriate import statements to the top of MyPipeline.java, in this case import org.apache.beam.sdk.values.PCollection;
+
+      Task 3: Run your pipeline to verify that it works
+      
+        cd $BASE_DIR
+        # Set up environment variables
+        export MAIN_CLASS_NAME=com.mypackage.pipeline.MyPipeline
+        mvn compile exec:java \
+        -Dexec.mainClass=${MAIN_CLASS_NAME}
+
+          At the moment, your pipeline doesn’t actually do anything; it simply reads in data. 
+          However, running it demonstrates a useful workflow, in which you verify the pipeline locally and cheaply 
+          using DirectRunner running on your local machine before doing more expensive computations. 
+          To run the pipeline using Google Cloud Dataflow, you may change runner to DataflowRunner.
+      Task 4: Adding in a transformation
+        
+        #Because Beam uses a generic apply method for PCollections, you can chain transforms sequentially. For example, you can chain transforms to create a sequential pipeline, like this one:
+        
+        [Final Output PCollection] = [Initial Input PCollection].apply([First Transform])
+        .apply([Second Transform])
+        .apply([Third Transform]);
+
+        # For this task, use a new sort of transform: a ParDo. ParDo is a Beam transform for generic parallel processing. The ParDo processing paradigm is similar to the “Map” phase of a Map/Shuffle/Reduce-style algorithm: a ParDo transform considers each element in the input
+        
+        # To complete this task, write a ParDo transform that reads in a JSON string representing a single event, parses it using Gson, and outputs the custom object returned by Gson.
+        # ParDo functions can be implemented in two ways, either inline or as a static class. Write inline ParDo functions like this
+
+        pCollection.apply(ParDo.of(new DoFn<T1, T2>() {
+        @ProcessElement
+        public void processElement(@Element T1 i, OutputReceiver<T2> r) {
+        // Do something
+        r.output(0);
+        }
+        }));
+
+      #Alternatively, they can be implemented as static classes that extend DoFn. This allows them to be more easily integrated with testing frameworks:
+        static class  MyDoFn extends DoFn<T1, T2> {
+        @ProcessElement
+        public void processElement(@Element T1 json, OutputReceiver<T2> r) throws Exception {
+        // Do something
+        r.output(0);
+        }
+        }
+        #And then, within the pipeline itself:
+        [Initial Input PCollection].apply(ParDo.of(new MyDoFn());
+
+        #In order to use Gson, you will need to create an inner class inside of MyPipeline. To take advantage of Beam Schemas, add the @DefaultSchema annotation. More on that later. Here’s an example of how to use Gson:
+        // Elsewhere
+        @DefaultSchema(JavaFieldSchema.class)
+        class MyClass {
+        int field1;
+        String field2;
+        }
+        // Within the DoFn
+        Gson gson = new Gson();
+        MyClass myClass = gson.fromJson(jsonString, MyClass.class);
+
+
+      Task 5: Writing to a sink
+        # At this point, your pipeline reads a file from Google Cloud Storage, parses each line, and emits a CommonLog for each element. The next step is to write these CommonLog objects into a BigQuery table.
+
+       # Because you annotated the CommonLog class with @DefaultSchema(JavaFieldSchema.class),
+        # each transform is aware of the names and types of the fields in the object, including BigQueryIO.write().
+        
+        pCollection.apply(BigQueryIO.<MyObject>write()
+        .to("my-project:output_dataset.output_table")
+        .useBeamSchema()
+        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
+        );
