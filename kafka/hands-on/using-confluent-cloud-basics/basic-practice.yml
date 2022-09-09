@@ -1,0 +1,50 @@
+steps:
+  join-confluent-cloud:
+    - create an account is for free and gives 400 $ to spend
+  create-first-cluster:
+    - give it a name
+    - place it in Google Cloud and give defaults
+  once created create a topic:
+    - check in the cluster console topic creation with the default 6 partitions
+  manually add messages to the topic:
+    - change the key with 1, 2, 3, 4, ...
+    - see how every new message goes into a different partition
+  install CLI:
+    - curl -sL --http1.1 https://cnfl.io/cli | sh -s -- latest
+    - go into bin directory
+    - ./confluent update
+    - ./confluent login --save
+  see available environments (kind of Google projects in this platform):
+    - ./confluent environment list
+    - We only have one, note the ID ...
+    - confluent environment use {ID}
+    " Now using ID as the default (active) environment"
+    - ./confluent kafka cluster use {ID2}
+    "Set Kafka cluster ID2 as the active cluster for environment ID1"
+  create an API key:
+    - confluent api-key create --resource {ID2}
+        API Key | FLW2FGMUPA4V2EYF                                                 |
+      | Secret  | eZfFxUgtyfG5f7Q2vFoLeLVVCaW7Sa9G4K2mdAYXBHe7npM3jjojUJdARu3QS4aS |
+    - ./confluent api-key use FLW2FGMUPA4V2EYF --resource {ID2}
+    "Set API Key FLW2FGMUPA4V2EYF as the active API key for lkc-xq8grx"
+    - Now we can connect with our CLI to the cluster
+  list topics with CLI:
+    - ./confluent kafka topic list
+  create a consumer that consumes from the beginning:
+    - ./confluent kafka topic consume --from-beginning topic_name
+  create a producer that allows you to separate aky and value with a colon:
+    ./confluent kafka topic produce poems --parse-key
+  describe the topic:
+    ./confluent kafka topic describe poems
+    - note we have 6 partitions
+  create other topics with 1 and 4 partitions:
+    confluent kafka topic create --partitions 1 poems_1
+    confluent kafka topic create --partitions 4 poems_4
+  now produce data into them:
+    confluent kafka topic produce poems_1 --parse-key
+    confluent kafka topic produce poems_4 --parse-key
+  check how this behaves in the console to get a grasp about partitions:
+    - This should have given you a good idea of how partitions will affect the distribution of data across your topic. The next time you create a topic, think about how many partitions you’ll need!
+
+
+

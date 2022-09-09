@@ -1,0 +1,10 @@
+getting-started-with-Python-Confluence: https://developer.confluent.io/get-started/python/
+
+Create and activate a Python virtual environment to give yourself a clean, isolated workspace: pip install virtualenv
+  virtualenv env
+  source env/bin/activate
+
+here-we-see-how-to-setup-kafka-cluster: https://developer.confluent.io/get-started/python/#kafka-setup
+  - docker... docker compose up -d
+  - confluent cloud
+  - other cluster: BOOTSTRAP SERVER needed
