@@ -1,0 +1,137 @@
+
+main site for snaps: https://snapcraft.io/snaps
+canonical site: https://canonical.com/?_ga=2.83284182.1938763019.1663833521-2016894021.1663833521
+
+David and Arturo:
+  - https://www.gsma.com/iot/narrow-band-internet-of-things-nb-iot/
+  - por ejemplo telefonillos en IoT con bluetooth
+  - puertas conectadas via GSM en narrow band
+
+snaps: Ubuntu Core OS made out of them
+  - package SW as a SNAP and then use it in any Ubuntu dist or any OS supporting Snaps
+  - The Started to Ubuntu Phone
+  - isolate from OS
+  - Interfaces plug and slot connects snaps btw themselves... vhttps://snapcraft.io/docs/interface-management
+  - snap is bigger than the binary because it includes the dependecie
+  - Snap includes delta updates ...
+  - there are ways to minimize size to close to the binary
+  - if there are other snaps with same dependencies and you trust them there are ways to share in order to save a lot of space
+
+
+
+produce-snap:
+  - Develop and test app (snap) with Ubuntu Desktop
+  - publish to store (snapcraft)
+  - deploy in Ubunty Core (IoT device)
+
+Github-integration:
+  - great, make sure repo has snapcraft.yml
+
+Snap-Store:
+  - Canonical
+  - you can have a Dedicated Snap Store, on Prem, SaaS
+  - Then you can have sub stores to allow certain devices with for example diff kernesl
+
+EdgeX: A platform
+  - Canonical std 5y support
+  - It is a set of snaps
+  - To make it easier to do standard grade apps in snaps which will be confined in a IoT device
+
+hello-world: https://github.com/VergilYotov/hello-snap
+  - snapcraft list-plugins
+  - conda, python ... plugins to make life easy !!!!
+  - snapcraft.io para ver documentacion
+  - The tutorial use no plugin, it is the MOST simple possiblw
+  - Default build with multipass
+  -   opotion to use no confine using our own OS
+  -   we do snapcraft --use-lxd
+  - if we say version: git takes whether the commit hash or the tag to constrcut the name of the snap
+
+
+
+register-name: https://snapcraft.io/docs/registering-your-app-name#:~:text=To%20register%20a%20name%20with,your%20snap's%20name%20to%20register.
+release-app: https://snapcraft.io/docs/releasing-your-app
+
+  - by default public (will appear in snap find searches) , you can always change to privete
+  - here is all quite flexible
+
+so supereasy:
+  - snap info mysnap
+  - snapcraft upload --release=stable mysnap.snap
+  - snapcraft register name-to-our-app
+  - myapp to execute
+  - snap list mysnap
+  - snap search texto --> hace una busqueda mas inteligente por metadatos y partes de
+  - scapcraft login is the first step to use the CLI
+  - snapcraft clean --destructive-mode
+  - /var/snap/myapp/current always points to last release
+  - the not to touch by user are in read-only part of the OS fs so cannot be touch by user!
+  - /var/snap all users
+  - /home/snap particular user
+  - /snap read only
+
+EdgeX: https://www.edgexfoundry.org/
+  - Not super flexible
+  - many connectors
+  - data management, security is out of the box making life much easier
+  - it has a reference architecture and from them implement differnet modules
+  -
+
+Devide services: abstraction over your devices to interact with EdgeX
+  - REST
+  - MQTT
+  - etc..
+  - IN THE END ARE edge connectors interacting with devices to:
+    discover
+    configure
+
+
+Application Services:
+
+Conteinerized:
+
+App Services: like doing pipelines
+  - Transform
+  - Enrich
+  - Filter
+  - Format ej serizlize 
+  - Compress
+  - Encrypt
+  - Export
+  -
+
+links: https://github.com/canonical/edgex-demos
+climate-control-demo: https://github.com/canonical/edgex-demos/tree/main/climate-control
+link-edgex-docs: https://docs.edgexfoundry.org/2.2/
+
+  - same approax always, read from a raspberrypy and send info to edgex by creating a interface
+
+ekiper: https://ekuiper.org/
+
+docs: https://ekuiper.org/docs/en/latest/tutorials/ai/tensorflow_lite_tutorial.html#run-the-plugin
+
+in md: we tell ekuiper what to do with data
+jwt: we needed a jwt token to connect
+  - definimos ventanas de 30 segundos en los que hacer una media de temperatura
+  - si sube de 30 activamos el ventilador
+  - imagine rules getting data from several sources, fuse this data, do some ML to make a decision based on it.
+  - ekuiper supports provisioning of rules.
+
+so:
+  - device
+  - device interface
+  - connect to Edgex and take full control
+
+Edgex export data to Kafka: https://docs.iotechsys.com/edge-xpert21/app-services/kafka/export-event-to-kafka.html
+to GC: https://docs.iotechsys.com/edge-xpert21/app-services/google/export-event-to-google.html
+
+EdgeX is interesting:
+  - add interoperability
+  - deployment
+  - maintenance
+
+
+- In the end it is regarding make your life easy, but if you are confy with what you have, keep it.
+- snaps are maintained so you don't have to take care of but if your system is superconflex consider the effort to migrate to EdgeX
+
+vergil.yotov@canonical.com

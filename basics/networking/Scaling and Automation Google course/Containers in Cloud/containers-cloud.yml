@@ -1,0 +1,25 @@
+link:
+
+objectives:
+  - Define the concept of a container and identify uses for containers.
+  - Identify the purpose of and use cases for Kubernetes and Google Kubernetes Engine GKE
+  - Identify the purpose of hybrid and multi-cloud computing with Anthos.
+
+Compute Engine IaaS:
+  - each developer with own OS, access to HW, build app in self contained env
+  - It is configurable system but costly deploy for small apps
+
+App Engine PaaS:
+  - Only Code and automatic scale up or down
+  - but no fine tune
+
+Containers: scales like a PaaS with nearly the flexibility of a IaaS
+  - box around code, the code is ultra portable as we see OS and HW as a black box, we can move it from the laptop to Cloud with no changes at all
+  - limited access to its own partition of the filesystem and HW
+  - start as quickly as a process
+  - Only needs in each Host OS a kernel supporting containers and a container runtime
+  - using network connections we can make them interconnect across a set of hosts
+
+
+hadoop-on-k8s-using-helm: https://medium.datadriveninvestor.com/deploying-hadoop-in-kubernetes-via-helm-45acd1582a9f
+

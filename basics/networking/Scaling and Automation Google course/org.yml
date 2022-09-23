@@ -1,0 +1,14 @@
+
+
+
+
+IPsec VPN
+
+
+VPC:
+  - Virtual Private Cloud
+  - VPC provides networking for your cloud-based resources and services that is global, scalable, and flexible.
+VPC networks:
+  - global resource
+  - consists of a list of regional virtual subnetworks (subnets) in data centers
+  - all connected by a global wide area network

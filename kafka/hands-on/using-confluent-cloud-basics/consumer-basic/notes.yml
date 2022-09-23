@@ -1,0 +1,26 @@
+notes:
+  configuration file:
+    need-endpoint:
+      - confluent kafka cluster describe
+      - copy the endpoint with url and port 9092
+    need-security-keys:
+      - For the SASL protocol
+      - if you don't remember the ones we created we can create a new one
+      - confluent api-key create --resource cluster-id
+  consumer:
+    - from the configuration file we create a Python dictionary with configparser
+    - more on https://docs.python.org/3/library/configparser.html
+    - this will have the minimun our producer will need to interact with the cluster:
+        security details:
+          security.protocol=SASL_SSL
+          sasl.mechanisms=PLAIN
+          sasl.username=api-key
+          sasl.password=api-secret
+        bootstrap servers: bootstrap.servers
+        consumer group id: group.id
+        a command to tell the procuder to start consumer from the beginning of the topic: auto.offset.reset=earliest
+    - we subscribe to the topic we created in the cluster:
+        api-docs: https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html?_ga=2.177735648.430094590.1662591529-1837163072.1661972155#pythonclient-consumer
+    - we poll every second until CTRL-Z in which case we finish the consumer
+
+

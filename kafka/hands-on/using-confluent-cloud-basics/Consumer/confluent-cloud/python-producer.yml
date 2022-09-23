@@ -8,3 +8,8 @@ here-we-see-how-to-setup-kafka-cluster: https://developer.confluent.io/get-start
   - docker... docker compose up -d
   - confluent cloud
   - other cluster: BOOTSTRAP SERVER needed
+
+materials:
+  python API: https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html?_ga=2.177735648.430094590.1662591529-1837163072.1661972155
+  Testing: https://developer.confluent.io/learn/testing-kafka/
+
